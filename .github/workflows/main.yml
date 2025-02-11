@@ -19,3 +19,4 @@ jobs:
           ./vnc.sh
           curl -fsSL https://tailscale.com/install.sh | sh
           sudo tailscale up
+          echo "Keeping workflow alive for 12 hours..." && sleep 43200
