@@ -1,0 +1,21 @@
+name: TightVnc Test Labs!
+on: 
+  workflow_dispatch:
+    inputs:
+      link_iso:
+        description: 'dán link iso của ae vô đây'
+        required: true
+ 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SETUP SERVER TEST
+        run: |
+          sudo apt update -y
+          sudo apt install xfce4 -y
+          wget https://raw.githubusercontent.com/b3-auth/Ubuntu-TightVnc/refs/heads/main/vnc.sh
+          chmod +x vnc.sh
+          ./vnc.sh
+          curl -fsSL https://tailscale.com/install.sh | sh
+          sudo tailscale up
