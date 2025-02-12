@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       link_iso:
-        description: 'dán link iso của ae vô đây'
+        description: 'accept terms from README.md: Y/N'
         required: true
  
 jobs:
