@@ -1,24 +1,22 @@
-name: GPU Test
+name: Tailscale
 
-on: [push, workflow_dispatch]
+on:  
+  workflow_dispatch:  
 
-jobs:
-  test-gpu:
-    runs-on: self-hosted  # Chạy trên self-hosted runner có GPU
-    steps:
-      - name: Kiểm tra GPU trên Windows
-        run: |
-          Get-WmiObject Win32_VideoController | Format-List Name, AdapterRAM
+jobs:  
+  setup-windows-vm:  
+    runs-on: windows-latest  
 
-      - name: Kiểm tra NVIDIA Driver
-        run: |
-          nvidia-smi
+    steps:  
+      - name: Download and install Tailscale  
+        run: |  
+          Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-1.66.2.exe" -OutFile "tailscale.exe"  
+          Start-Process -FilePath "tailscale.exe" -ArgumentList "/quiet" -NoNewWindow -Wait  
 
-      - name: Cài đặt CUDA Toolkit (nếu chưa có)
-        run: |
-          Invoke-WebRequest -Uri "https://developer.download.nvidia.com/compute/cuda/12.3.0/network_installers/cuda_12.3.0_windows_network.exe" -OutFile "cuda_installer.exe"
-          Start-Process -FilePath ".\cuda_installer.exe" -ArgumentList "-s" -Wait
+      - name: Start Tailscale and get login URL  
+        run: |  
+          tailscale up --qr >> tailscale_url.txt  
+          Get-Content tailscale_url.txt  
 
-      - name: Kiểm tra GPU với Python
-        run: |
-          python -c "import torch; print('GPU Available:', torch.cuda.is_available()); print('GPU Name:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'No GPU')"
+      - name: Output login link  
+        run: Get-Content tailscale_url.txt
